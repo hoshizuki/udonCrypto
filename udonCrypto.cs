@@ -69,7 +69,7 @@ public class udonCrypto
 			UInt32[] e = (UInt32[]) h.Clone();
 			for( int i = 0; i < SHA256_work; i++ ) {
 				UInt32 s1 = rotate( e[4], 6 ) ^ rotate( e[4], 11 ) ^ rotate( e[4], 25 );
-				UInt32 ch = (e[4] & e[5]) ^ ((~e[4]) & e[6]);
+				UInt32 ch = (e[4] & e[5]) ^ ((0xffffffff - e[4]) & e[6]);
 				UInt32 t1 = e[7] + s1 + ch + k[i] + w[i];
 				UInt32 s0 = rotate( e[0], 2 ) ^ rotate( e[0], 13 ) ^ rotate( e[0], 22 );
 				UInt32 mj = (e[0] & e[1]) ^ (e[0] & e[2]) ^ (e[1] & e[2]);
