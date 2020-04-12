@@ -8,10 +8,7 @@ public class udonCrypto
 
 	private static UInt32 rotate( UInt32 x, int y )
 	{
-		UInt64 xx = (UInt64)x;
-		xx = (xx << 32) + xx;
-		xx = xx >> y;
-		return (UInt32)xx;
+		return (x >> y) + (x << (32 - y));
 	}
 
 	public static byte[] SHA256( byte[] msg )
