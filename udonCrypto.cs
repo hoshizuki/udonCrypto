@@ -43,15 +43,15 @@ public class udonCrypto
 		for( int i = msg.Length + 1; i < m.Length; i++ ) {
 			m[i] = 0;
 		}
-		UInt64 msgLength = (UInt64)( msg.Length * 8 );
-		m[m.Length - 8] = (byte)( msgLength >> 56 );
-		m[m.Length - 7] = (byte)( msgLength >> 48 );
-		m[m.Length - 6] = (byte)( msgLength >> 40 );
-		m[m.Length - 5] = (byte)( msgLength >> 32 );
-		m[m.Length - 4] = (byte)( msgLength >> 24 );
-		m[m.Length - 3] = (byte)( msgLength >> 16 );
-		m[m.Length - 2] = (byte)( msgLength >>  8 );
-		m[m.Length - 1] = (byte)( msgLength >>  0 );
+		UInt64 msgLength = (UInt64)( msg.Length ) * 8;
+		m[m.Length - 8] = (byte)( (msgLength >> 56) & 0xff );
+		m[m.Length - 7] = (byte)( (msgLength >> 48) & 0xff );
+		m[m.Length - 6] = (byte)( (msgLength >> 40) & 0xff );
+		m[m.Length - 5] = (byte)( (msgLength >> 32) & 0xff );
+		m[m.Length - 4] = (byte)( (msgLength >> 24) & 0xff );
+		m[m.Length - 3] = (byte)( (msgLength >> 16) & 0xff );
+		m[m.Length - 2] = (byte)( (msgLength >>  8) & 0xff );
+		m[m.Length - 1] = (byte)( (msgLength >>  0) & 0xff );
 
 		UInt32[] h = (UInt32[]) initial_h.Clone();
 		for( int c = 0; c < chunk_n; c++ ) {
