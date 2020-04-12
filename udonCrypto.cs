@@ -85,10 +85,10 @@ public class udonCrypto
 
 		byte[] hash = new byte[SHA256_leng / 8];
 		for( int i = 0; i < SHA256_leng / 32; i++ ) {
-			hash[ i * 4 + 0 ] = (byte)( h[i] >> 24 );
-			hash[ i * 4 + 1 ] = (byte)( h[i] >> 16 );
-			hash[ i * 4 + 2 ] = (byte)( h[i] >>  8 );
-			hash[ i * 4 + 3 ] = (byte)( h[i]       );
+			hash[ i * 4 + 0 ] = (byte)( (h[i] >> 24) & 0xff );
+			hash[ i * 4 + 1 ] = (byte)( (h[i] >> 16) & 0xff );
+			hash[ i * 4 + 2 ] = (byte)( (h[i] >>  8) & 0xff );
+			hash[ i * 4 + 3 ] = (byte)( (h[i]      ) & 0xff );
 		}
 
 		return hash;
