@@ -94,6 +94,92 @@ public class udonCrypto
 		return hash;
 	}
 
+	private UInt32[] BigIntAdd( UInt32[] lhs, UInt32[] rhs, out UInt32 c )
+	{
+		// lhs.Length == rhs.Length
+		UInt32[] r = new UInt32[ lhs.Length ];
+		c = 0;
+		for( int i = 0; i < lhs.Length; i++ ) {
+			UInt64 t = c;
+			t = t + lhs[i];
+			t = t + rhs[i];
+			r[i] = (UInt32)( t & 0xffffffff );
+			c = (UInt32)( t >> 32 );
+		}
+		return r;
+	}
+
+	private UInt32[] BigIntMinus( UInt32[] lhs, UInt32[] rhs, out UInt32 b )
+	{
+		// lhs.Length == rhs.Length
+		UInt32[] r = new UInt32[ lhs.Length ];
+		b = 0;
+		for( int i = 0; i < lhs.Length; i++ ) {
+			UInt64 t = lhs[i];
+			t = t - rhs[i];
+			t = t - b;
+			if( t < 0 ) {
+				r[i] = (UInt32)( t + 0x100000000 );
+				b = 1;
+			} else {
+				r[i] = (UInt32)( t );
+				b = 0;
+			}
+		}
+		return r;
+	}
+
+	private UInt32[] BigIntMult64( UInt32[] lhs, UInt32[] rhs )
+	{
+		// lhs.Length == rhs.Length == 2
+		UInt32[] r = new UInt32[ 4 ];
+
+		UInt64 t0 = lhs[0];
+		t0 = t0 * rhs[0];
+		UInt64 t2 = lhs[1];
+		t2 = t2 * rhs[1];
+
+		UInt32[] z = new UInt32[ 4 ];
+		z[0] = (UInt32)( t0 & 0xffffffff );
+		z[1] = (UInt32)( t0 >> 32 );
+		z[2] = (UInt32)( t2 & 0xffffffff );
+		z[3] = (UInt32)( t2 >> 32 );
+
+		UInt64 t11 = lhs[1], t12 = rhs[1];
+		t11 = t11 * rhs[0];
+		t12 = t12 * lhs[0];
+		UInt32[] z1 = new UInt32[ 4 ];
+		UInt32[] z2 = new UInt32[ 4 ];
+		z1[0] = 0;
+		z1[1] = (UInt32)( t11 & 0xffffffff );
+		z1[2] = (UInt32)( t11 >> 32 );
+		z1[3] = 0;
+		z2[0] = 0;
+		z2[1] = (UInt32)( t12 & 0xffffffff );
+		z2[2] = (UInt32)( t12 >> 32 );
+		z2[3] = 0;
+
+		UInt32 c1, c2;
+		return BigIntAdd( z, BigIntAdd( z1, z2, out c1 ), out c2 );
+		// c1 == 0, c2 == 0
+	}
+
+	private UInt32[] BigIntMult128( UInt32[] lhs, UInt32[] rhs )
+	{
+	}
+
+	private UInt32[] BigIntMult256( UInt32[] lhs, UInt32[] rhs )
+	{
+	}
+
+	private UInt32[] BigIntMult( UInt32[] lhs, UInt32[] rhs )
+	{
+	}
+
+	private UInt64[] BigIntDiv( UInt64[] lhs, UInt64[] rhs, out UInt64[] mod )
+	{
+	}
+
 	public static void Main()
 	{
 		udonCrypto c = new udonCrypto();
