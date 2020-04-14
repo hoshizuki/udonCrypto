@@ -109,7 +109,7 @@ public class udonCrypto
 		return r;
 	}
 
-	private UInt32[] BigIntMinus( UInt32[] lhs, UInt32[] rhs, out UInt32 b )
+	private UInt32[] BigIntSub( UInt32[] lhs, UInt32[] rhs, out UInt32 b )
 	{
 		// lhs.Length == rhs.Length
 		UInt32[] r = new UInt32[ lhs.Length ];
@@ -164,20 +164,68 @@ public class udonCrypto
 		// c1 == 0, c2 == 0
 	}
 
-	private UInt32[] BigIntMult128( UInt32[] lhs, UInt32[] rhs )
-	{
-	}
-
-	private UInt32[] BigIntMult256( UInt32[] lhs, UInt32[] rhs )
-	{
-	}
-
 	private UInt32[] BigIntMult( UInt32[] lhs, UInt32[] rhs )
 	{
+		if( lhs.Length == 2 ) return BigIntMult64( lhs, rhs );
+
+		// lhs.Length == rhs.Length == 8
+		int Leng = lhs.Length;
+		UInt32[] r = new UInt32[ Leng * 2 ];
+
+		UInt32[] lhs0 = new UInt32[ Leng / 2 ];
+		UInt32[] lhs1 = new UInt32[ Leng / 2 ];
+		UInt32[] rhs0 = new UInt32[ Leng / 2 ];
+		UInt32[] rhs1 = new UInt32[ Leng / 2 ];
+		Array.Copy( lhs,        0, lhs0, 0, Leng / 2 );
+		Array.Copy( lhs, Leng / 2, lhs1, 0, Leng / 2 );
+		Array.Copy( rhs,        0, rhs0, 0, Leng / 2 );
+		Array.Copy( rhs, Leng / 2, rhs1, 0, Leng / 2 );
+
+		UInt32[] z = new UInt32[ Leng * 2 ];
+		UInt32[] z0 = BigIntMult( lhs0, rhs0 );
+		UInt32[] z2 = BigIntMult( lhs1, rhs1 );
+		Array.Copy( z0, 0, z,    0, Leng );
+		Array.Copy( z2, 0, z, Leng, Leng );
+
+		UInt32[] t0 = new UInt32[ Leng * 2 ];
+		UInt32[] t1 = new UInt32[ Leng * 2 ];
+		UInt32[] t2 = new UInt32[ Leng * 2 ];
+		Array.Clear( t0, 0, Leng * 2 );
+		Array.Clear( t1, 0, Leng * 2 );
+		Array.Clear( t2, 0, Leng * 2 );
+		Array.Copy( z0, 0, t0, Leng / 2, Leng );
+		Array.Copy( z2, 0, t2, Leng / 2, Leng );
+
+		UInt32 bl, br, t;
+		UInt32[] lhsd = BigIntSub( lhs1, lhs0, out bl );
+		UInt32[] rhsd = BigIntSub( rhs1, rhs0, out br );
+		if( bl != 0 ) {
+			lhsd = BigIntSub( lhs0, lhs1, out t );
+		}
+		if( br != 0 ) {
+			rhsd = BigIntSub( rhs0, rhs1, out t );
+		}
+		// t == 0
+		Array.Copy( BigIntMult( lhsd, rhsd ), 0, t1, Leng / 2, Leng );
+
+		UInt32[] z1 = BigIntAdd( t0, t2, out t );
+		// t == 0
+		if( br != bl ) {
+			z1 = BigIntAdd( z1, t1, out t );
+		} else {
+			z1 = BigIntSub( z1, t1, out t );
+		}
+		// t == 0
+
+		UInt32 c1, c2;
+		return BigIntAdd( BigIntAdd( z0, z1, out c1 ), z2, out c2 );
+		// c1 == 0, c2 == 0
 	}
 
 	private UInt64[] BigIntDiv( UInt64[] lhs, UInt64[] rhs, out UInt64[] mod )
 	{
+		mod = null;
+		return null;
 	}
 
 	public static void Main()
