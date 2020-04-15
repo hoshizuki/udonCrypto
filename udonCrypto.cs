@@ -115,7 +115,7 @@ public class udonCrypto
 		UInt32[] r = new UInt32[ lhs.Length ];
 		b = 0;
 		for( int i = 0; i < lhs.Length; i++ ) {
-			UInt64 t = lhs[i];
+			Int64 t = lhs[i];
 			t = t - rhs[i];
 			t = t - b;
 			if( t < 0 ) {
@@ -170,7 +170,6 @@ public class udonCrypto
 
 		// lhs.Length == rhs.Length == 8
 		int Leng = lhs.Length;
-		UInt32[] r = new UInt32[ Leng * 2 ];
 
 		UInt32[] lhs0 = new UInt32[ Leng / 2 ];
 		UInt32[] lhs1 = new UInt32[ Leng / 2 ];
@@ -217,9 +216,8 @@ public class udonCrypto
 		}
 		// t == 0
 
-		UInt32 c1, c2;
-		return BigIntAdd( BigIntAdd( z0, z1, out c1 ), z2, out c2 );
-		// c1 == 0, c2 == 0
+		return BigIntAdd( z, z1, out t );
+		// t == 0
 	}
 
 	private UInt64[] BigIntDiv( UInt64[] lhs, UInt64[] rhs, out UInt64[] mod )
