@@ -6,6 +6,22 @@ public class udonCrypto
 	private const int SHA256_chunk = 512; // bit
 	private const int SHA256_work  = 64;
 
+	public byte[] StringToByte( string s ) {
+		byte[] r = new byte[ s.Length ];
+		for( int i = 0; i < s.Length; i++ ) {
+			r[i] = Convert.ToByte( s[i] );
+		}
+		return r;
+	}
+
+	public string ByteToHex( byte[] b ) {
+		string r = "";
+		for( int i = 0; i < b.Length; i++ ) {
+			r += b[i].ToString( "X2" );
+		}
+		return r;
+	}
+
 	private UInt32 rotate( UInt32 x, int y )
 	{
 		return (x >> y) + (x << (32 - y));
@@ -230,10 +246,10 @@ public class udonCrypto
 	{
 		udonCrypto c = new udonCrypto();
 
-		byte[] msg = System.Text.Encoding.ASCII.GetBytes( "abc" );
+		byte[] msg = c.StringToByte( "abc" );
 
 		byte[] hash = c.SHA256( msg );
 
-		Console.WriteLine( System.BitConverter.ToString( hash ).Replace( "-", "" ) );
+		Console.WriteLine( c.ByteToHex( hash ) );
 	}
 }
